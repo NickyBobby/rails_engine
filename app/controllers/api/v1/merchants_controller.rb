@@ -31,6 +31,17 @@ module Api
         respond_with merchant.invoices
       end
 
+      def most_revenue
+        merchants = Merchant.all.sort_by do |merchant|
+                     Invoice.where(merchant_id: merchant.id)
+                            .joins(:invoice_items, :transactions)
+                            .where("transactions.result = 'success'")
+                            .sum(":unit_price * :quantity")
+                          end
+        top_merchants = merchants.reverse.take(params[:quantity].to_i)
+        respond_with top_merchants
+      end
+
       private
 
         def merchant_params

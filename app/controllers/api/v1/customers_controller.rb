@@ -33,6 +33,15 @@ module Api
         respond_with customer.transactions
       end
 
+      def favorite_merchant
+        merchant_id = customer.invoices.joins(:transactions)
+                         .where("result = 'success'")
+                         .group(:merchant_id).count
+                         .sort_by { |key, value| value }
+                         .reverse.first.first
+        respond_with Merchant.find(merchant_id)
+      end
+
       private
 
         def customer_params
