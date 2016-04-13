@@ -12,7 +12,6 @@ module Api
       end
 
       def find
-        binding.pry
         respond_with Transaction.find_by(transaction_params)
       end
 
