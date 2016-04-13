@@ -12,11 +12,27 @@ module Api
       end
 
       def find
-        respond_with Customer.find_by(customer_params)
+        if customer_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Customer.find_by(created_at: ct)
+        elsif customer_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Customer.find_by(updated_at: cu)
+        else
+          respond_with Customer.find_by(customer_params)
+        end
       end
 
       def find_all
-        respond_with Customer.where(customer_params)
+        if customer_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Customer.where(created_at: ct)
+        elsif customer_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Customer.where(updated_at: cu)
+        else
+          respond_with Customer.where(customer_params)
+        end
       end
 
       def random
@@ -24,12 +40,10 @@ module Api
       end
 
       def invoices
-        # customer = Customer.find(params[:id])
         respond_with customer.invoices
       end
 
       def transactions
-        # customer = Customer.find(params[:id])
         respond_with customer.transactions
       end
 
