@@ -12,16 +12,37 @@ module Api
       end
 
       def find
-        # find stuff
+        respond_with Merchant.find_by(merchant_params)
       end
 
       def find_all
-        # find all that match
+        respond_with Merchant.where(merchant_params)
       end
 
       def random
         respond_with Merchant.all.sample
       end
+
+      def items
+        respond_with merchant.items
+      end
+
+      def invoices
+        respond_with merchant.invoices
+      end
+
+      private
+
+        def merchant_params
+          params.permit(:id,
+                        :name,
+                        :created_at,
+                        :updated_at)
+        end
+
+        def merchant
+          Merchant.find(params[:id])
+        end
     end
   end
 end
