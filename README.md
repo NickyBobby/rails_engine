@@ -1,6 +1,6 @@
 # Rails Engine
 
-This project is a JSON API that exposes several kinds of sales data. The original specifications of the project can be found at [Original Project's Specifications](https://github.com/turingschool/lesson_plans/blob/master/ruby_03-professional_rails_applications/rails_engine.md#customers-1)
+This project is a JSON API that exposes several kinds of sales data. The original specifications of the project can be found at [Original Project's Specifications](https://github.com/turingschool/lesson_plans/blob/master/ruby_03-professional_rails_applications/rails_engine.md)
 
 ## Deployment & Testing
 
