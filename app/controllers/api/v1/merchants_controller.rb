@@ -12,11 +12,27 @@ module Api
       end
 
       def find
-        respond_with Merchant.find_by(merchant_params)
+        if merchant_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Merchant.find_by(created_at: ct)
+        elsif merchant_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Merchant.find_by(updated_at: cu)
+        else
+          respond_with Merchant.find_by(merchant_params)
+        end
       end
 
       def find_all
-        respond_with Merchant.where(merchant_params)
+        if merchant_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Merchant.where(created_at: ct)
+        elsif merchant_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Merchant.where(updated_at: cu)
+        else
+          respond_with Merchant.where(merchant_params)
+        end
       end
 
       def random
@@ -36,10 +52,52 @@ module Api
                      Invoice.where(merchant_id: merchant.id)
                             .joins(:invoice_items, :transactions)
                             .where("transactions.result = 'success'")
-                            .sum(":unit_price * :quantity")
+                            .sum("unit_price * quantity")
                           end
         top_merchants = merchants.reverse.take(params[:quantity].to_i)
         respond_with top_merchants
+      end
+
+      def most_items
+        merchants = Merchant.all.sort_by do |merchant|
+                      Invoice.where(merchant_id: merchant.id)
+                             .joins(:invoice_items, :transactions)
+                             .where("transactions.result = 'success'")
+                             .sum(:quantity)
+                    end
+        top_merchants = merchants.reverse.take(params[:quantity].to_i)
+        respond_with top_merchants
+      end
+
+      def revenue
+        if params['date']
+          date = DateTime.parse(params[:date])
+          revenue_for_day = merchant.invoices.joins(:invoice_items, :transactions)
+                                             .where("invoices.created_at = ?", date)
+                                             .where("transactions.result = 'success'")
+                                             .sum("unit_price * quantity")
+          rev_day = { "revenue" => sprintf('%.02f', (revenue_for_day / 100.00)) }
+          respond_with rev_day
+        else
+          merchant_revenue = merchant.invoices.joins(:invoice_items, :transactions).where("transactions.result = 'success'").sum("unit_price * quantity")
+          m_rev = { "revenue" => sprintf('%.02f', (merchant_revenue / 100.00)) }
+          respond_with m_rev
+        end
+      end
+
+      def favorite_customer
+        customer_id = merchant.invoices.joins(:invoice_items, :transactions)
+                                       .where("transactions.result = 'success'")
+                                       .group(:customer_id)
+                                       .count.sort_by { |k,v| v }.reverse.first[0]
+        respond_with Customer.find(customer_id)
+      end
+
+      def customers_with_pending_invoices
+        customers = merchant.invoices.joins(:invoice_items, :transactions)
+                                     .where("transactions.result = 'failed'")
+                                     .group(:customer_id)
+        respond_with customers
       end
 
       private

@@ -12,11 +12,27 @@ module Api
       end
 
       def find
-        respond_with Invoice.find_by(invoice_params)
+        if invoice_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Invoice.find_by(created_at: ct)
+        elsif invoice_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Invoice.find_by(updated_at: cu)
+        else
+          respond_with Invoice.find_by(invoice_params)
+        end
       end
 
       def find_all
-        respond_with Invoice.where(invoice_params)
+        if invoice_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Invoice.where(created_at: ct)
+        elsif invoice_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Invoice.where(updated_at: cu)
+        else
+          respond_with Invoice.where(invoice_params)
+        end
       end
 
       def random
