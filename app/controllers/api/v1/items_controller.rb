@@ -12,11 +12,27 @@ module Api
       end
 
       def find
-        respond_with Item.find_by(item_params)
+        if item_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Item.find_by(created_at: ct)
+        elsif item_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Item.find_by(updated_at: cu)
+        else
+          respond_with Item.find_by(item_params)
+        end
       end
 
       def find_all
-        respond_with Item.where(item_params)
+        if item_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Item.where(created_at: ct)
+        elsif item_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Item.where(updated_at: cu)
+        else
+          respond_with Item.where(item_params)
+        end
       end
 
       def random

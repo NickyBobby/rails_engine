@@ -11,18 +11,24 @@ Rails.application.routes.draw do
         member do
           get :invoices
           get :transactions
+          get '/favorite_merchant', to: 'customers#favorite_merchant'
         end
       end
       resources :merchants,     only: [:index, :show] do
         collection do
-          get '/find',     to: 'merchants#find'
-          get '/find_all', to: 'merchants#find_all'
-          get '/random',   to: 'merchants#random'
+          get '/find',         to: 'merchants#find'
+          get '/find_all',     to: 'merchants#find_all'
+          get '/random',       to: 'merchants#random'
+          get '/most_revenue', to: 'merchants#most_revenue'
+          get '/most_items',   to: 'merchants#most_items'
         end
 
         member do
           get :items
           get :invoices
+          get '/revenue',                         to: 'merchants#revenue'
+          get '/favorite_customer',               to: 'merchants#favorite_customer'
+          get '/customers_with_pending_invoices', to: 'merchants#customers_with_pending_invoices'
         end
       end
       resources :items,         only: [:index, :show] do

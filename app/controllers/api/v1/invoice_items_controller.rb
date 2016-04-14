@@ -12,11 +12,33 @@ module Api
       end
 
       def find
-        respond_with InvoiceItem.find_by(invoice_items_params)
+        if invoice_items_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with InvoiceItem.find_by(created_at: ct)
+        elsif invoice_items_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with InvoiceItem.find_by(updated_at: cu)
+        elsif invoice_items_params[:unit_price]
+          unit_price = (invoice_items_params[:unit_price].to_f * 100).to_i
+          respond_with InvoiceItem.find_by(unit_price: unit_price)
+        else
+          respond_with InvoiceItem.find_by(invoice_items_params)
+        end
       end
 
       def find_all
-        respond_with InvoiceItem.where(invoice_items_params)
+        if invoice_items_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with InvoiceItem.where(created_at: ct)
+        elsif invoice_items_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with InvoiceItem.where(updated_at: cu)
+        elsif invoice_items_params[:unit_price]
+          unit_price = (invoice_items_params[:unit_price].to_f * 100).to_i
+          respond_with InvoiceItem.where(unit_price: unit_price)
+        else
+          respond_with InvoiceItem.where(invoice_items_params)
+        end
       end
 
       def random

@@ -12,11 +12,27 @@ module Api
       end
 
       def find
-        respond_with Transaction.find_by(transaction_params)
+        if transaction_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Transaction.find_by(created_at: ct)
+        elsif transaction_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Transaction.find_by(updated_at: cu)
+        else
+          respond_with Transaction.find_by(transaction_params)
+        end
       end
 
       def find_all
-        respond_with Transaction.where(transaction_params)
+        if transaction_params[:created_at]
+          ct = DateTime.parse(params[:created_at].to_s)
+          respond_with Transaction.where(created_at: ct)
+        elsif transaction_params[:updated_at]
+          cu = DateTime.parse(params[:updated_at].to_s)
+          respond_with Transaction.where(updated_at: cu)
+        else
+          respond_with Transaction.where(transaction_params)
+        end
       end
 
       def random
