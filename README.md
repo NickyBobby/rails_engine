@@ -4,19 +4,20 @@ This project is a JSON API that exposes several kinds of sales data. The origina
 
 ## Deployment & Testing
 
-1. Clone the repo
+##### 1. Clone the repo
 ```
 $ git clone https://github.com/NickyBobby/rails_engine.git
+$ bundle
 ```
-2. Create and migrate the database
+##### 2. Create and migrate the database
 ```
 $ rake db:setup
 ```
-3. Import the csv files data
+##### 3. Import the csv files data
 ```
 $ rake import_csv
 ```
-4. Run the test suite
+##### 4. Run the test suite
 ```
 $ rspec
 ```
